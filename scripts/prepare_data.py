@@ -11,13 +11,14 @@ from pathlib import Path
 # Add src to path so we can import our modules
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.data_loader import COUNTRIES, load_country
 from src.cleaning import run_cleaning_pipeline
+from src.data_loader import COUNTRIES, load_country
+
 
 def main():
     data_dir = Path("data")
     print(f"🚀 Starting data preparation in {data_dir}...")
-    
+
     for country in COUNTRIES:
         try:
             print(f"📦 Processing {country}...")

@@ -3,6 +3,7 @@
 __pycache__/
 *.py[cod]
 *.pyo
+.cursorignore
 
 # ── Data files – NEVER commit raw or cleaned CSVs ─────────────────────────────
 data

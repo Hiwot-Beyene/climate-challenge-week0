@@ -4,14 +4,11 @@ Tests for src/data_loader.py
 These tests use a synthetic CSV so they work without the real data/ files.
 """
 
-import tempfile
-from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import pytest
 
-from src.data_loader import load_country, NASA_SENTINEL
+from src.data_loader import NASA_SENTINEL, load_country
 
 
 @pytest.fixture
