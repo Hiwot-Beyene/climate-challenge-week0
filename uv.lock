@@ -366,7 +366,7 @@ wheels = [
 ]
 
 [[package]]
-name = "climate-challenge-week0"
+name = "climate-cop32-analytics"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

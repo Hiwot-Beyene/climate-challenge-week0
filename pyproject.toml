@@ -1,7 +1,7 @@
 [project]
-name = "climate-challenge-week0"
+name = "climate-cop32-analytics"
 version = "0.1.0"
-description = "African Climate Trend Analysis for COP32 – 10 Academy KAIM Week 0"
+description = "African Climate Trend Analysis for COP32"
 requires-python = ">=3.11"
 dependencies = [
     "pandas>=2.2.2",
@@ -25,7 +25,10 @@ dev = [
 
 [tool.ruff]
 line-length = 88
+
+[tool.ruff.lint]
 select = ["E", "F", "W", "I"]
+ignore = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
