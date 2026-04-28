@@ -1,4 +1,4 @@
-# kaim-week0
+# Climate COP32 Analytics
 Climate data analysis project exploring temperature, precipitation, and extreme weather patterns across five African countries (2015–2026). The project focuses on transforming raw climate data into actionable insights to support Ethiopia’s COP32 climate policy strategy.
 
 
@@ -47,8 +47,8 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 ### 2. Clone the repo
 
 ```bash
-git clone https://github.com/Hiwot-Beyene/climate-challenge-week0.git
-cd climate-challenge-week0
+git clone <your-repository-url>
+cd <your-repository-directory>
 ```
 
 ### 3. Create the virtual environment and install all dependencies
@@ -58,6 +58,11 @@ uv sync --extra dev
 ```
 
 This creates `.venv/` automatically — no separate `python -m venv` needed.
+
+Dependency management is lockfile-only:
+- `pyproject.toml` defines dependency intent.
+- `uv.lock` pins exact resolved versions.
+- `requirements.txt` is intentionally not used.
 
 ### 4. Activate (optional — uv run handles this automatically)
 
@@ -88,7 +93,7 @@ data/
 uv run jupyter notebook
 ```
 
-Open `notebooks/ethiopia_eda.ipynb` to start Task 2.
+Open `notebooks/ethiopia_eda.ipynb` to start the country analysis flow.
 
 ### 7. Run the tests
 
@@ -107,11 +112,11 @@ uv run streamlit run app/main.py
 ## Project structure
 
 ```
-climate-challenge-week0/
+project-root/
 ├── .github/workflows/ci.yml       # GitHub Actions CI — runs on every push
 ├── .vscode/settings.json          # Editor settings (uv venv path, ruff formatter)
 ├── .gitignore                     # Excludes data/, .venv/, secrets
-├── pyproject.toml                 # uv project config + pinned dependencies
+├── pyproject.toml                 # dependency source of truth
 ├── README.md                      # This file
 │
 ├── data/                          # GITIGNORED — raw + cleaned CSVs live here
@@ -161,11 +166,12 @@ climate-challenge-week0/
 
 ## CI/CD
 
-GitHub Actions runs on every push. The workflow (`.github/workflows/ci.yml`):
+GitHub Actions is lockfile-driven and deterministic. The workflow (`.github/workflows/ci.yml`):
 1. Installs uv
-2. Runs `uv sync --extra dev`
-3. Lints with ruff
-4. Runs pytest
+2. Pins Python 3.11 in CI
+3. Runs `uv sync --frozen --all-extras` (installs exactly what `uv.lock` defines)
+4. Runs `uv run ruff check ...`
+5. Runs `uv run pytest ...`
 
 ---
 
