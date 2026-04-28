@@ -26,16 +26,39 @@ COUNTRY_COLORS = {
 def load_combined(data_dir: Path = Path("data")) -> pd.DataFrame:
     """Load all *_clean.csv files and return a single concatenated DataFrame."""
     frames = []
+    missing_files = []
     for country in COUNTRIES:
         path = data_dir / f"{country}_clean.csv"
         if path.exists():
-            df = pd.read_csv(path, parse_dates=["DATE"])
+            try:
+                df = pd.read_csv(path, parse_dates=["DATE"])
+            except Exception as exc:
+                raise ValueError(f"Could not parse cleaned dataset: {path}") from exc
+
+            required = {"DATE", "Country", "T2M", "PRECTOTCORR"}
+            missing_cols = required.difference(df.columns)
+            if missing_cols:
+                raise ValueError(
+                    f"Cleaned file {path} is missing required columns: "
+                    f"{sorted(missing_cols)}"
+                )
             frames.append(df)
+        else:
+            missing_files.append(path.name)
+
     if not frames:
         raise FileNotFoundError("No cleaned CSV files found in data/")
+    if missing_files:
+        raise FileNotFoundError(
+            "Missing cleaned files for dashboard input: "
+            f"{missing_files}. Run the cleaning pipeline first."
+        )
+
     combined = pd.concat(frames, ignore_index=True)
     if "Year" not in combined.columns:
         combined["Year"] = combined["DATE"].dt.year
+    if "Month" not in combined.columns:
+        combined["Month"] = combined["DATE"].dt.month
     return combined
 
 

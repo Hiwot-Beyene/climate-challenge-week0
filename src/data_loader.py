@@ -21,6 +21,7 @@ import pandas as pd
 NASA_SENTINEL = -999
 
 COUNTRIES = ["ethiopia", "kenya", "sudan", "tanzania", "nigeria"]
+REQUIRED_COLUMNS = {"YEAR", "DOY"}
 
 
 def load_country(country: str, data_dir: str | Path = "data") -> pd.DataFrame:
@@ -39,7 +40,23 @@ def load_country(country: str, data_dir: str | Path = "data") -> pd.DataFrame:
         Clean-dated DataFrame with a DATE column and a Country column.
     """
     path = Path(data_dir) / f"{country}.csv"
-    df = pd.read_csv(path)
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Missing input file for {country}: {path}. "
+            "Place the raw NASA POWER CSV in the data directory."
+        )
+
+    try:
+        df = pd.read_csv(path)
+    except Exception as exc:
+        raise ValueError(f"Failed to read CSV for {country}: {path}") from exc
+
+    missing_cols = REQUIRED_COLUMNS.difference(df.columns)
+    if missing_cols:
+        raise ValueError(
+            f"Dataset for {country} is missing required columns: "
+            f"{sorted(missing_cols)}"
+        )
 
     # Step 1 — replace NASA sentinel BEFORE any statistics
     df.replace(NASA_SENTINEL, np.nan, inplace=True)
@@ -48,9 +65,13 @@ def load_country(country: str, data_dir: str | Path = "data") -> pd.DataFrame:
     df["Country"] = country.capitalize()
 
     # Step 3 — build proper datetime from YEAR + DOY
-    df["DATE"] = pd.to_datetime(
-        df["YEAR"] * 1000 + df["DOY"], format="%Y%j"
-    )
+    try:
+        df["DATE"] = pd.to_datetime(df["YEAR"] * 1000 + df["DOY"], format="%Y%j")
+    except Exception as exc:
+        raise ValueError(
+            f"Failed to parse YEAR/DOY into DATE for {country}. "
+            "Check YEAR and DOY values for invalid entries."
+        ) from exc
 
     # Step 4 — convenience columns
     df["Month"] = df["DATE"].dt.month
