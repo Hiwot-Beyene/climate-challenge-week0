@@ -64,6 +64,12 @@ Dependency management is lockfile-only:
 - `uv.lock` pins exact resolved versions.
 - `requirements.txt` is intentionally not used.
 
+For evaluator compatibility, `requirements.txt` is generated from the lockfile and
+kept in sync via:
+```bash
+uv export --format requirements-txt --no-hashes > requirements.txt
+```
+
 ### 4. Activate (optional — uv run handles this automatically)
 
 ```bash
