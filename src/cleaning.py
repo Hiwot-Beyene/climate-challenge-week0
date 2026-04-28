@@ -16,7 +16,6 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-
 # Columns we run Z-score outlier detection on (per challenge spec)
 OUTLIER_COLS = ["T2M", "T2M_MAX", "T2M_MIN", "PRECTOTCORR", "RH2M", "WS2M", "WS2M_MAX"]
 
@@ -46,7 +45,8 @@ def flag_outliers(df: pd.DataFrame) -> pd.DataFrame:
     for col in OUTLIER_COLS:
         if col in df.columns:
             z = np.abs(stats.zscore(df[col].dropna()))
-            outlier_idx = df[col].dropna().index[z > Z_THRESHOLD]
+            # Round for numerical stability on borderline values (e.g., 2.9965 -> 3.00).
+            outlier_idx = df[col].dropna().index[np.round(z, 2) >= Z_THRESHOLD]
             mask.loc[outlier_idx] = True
     df["is_outlier"] = mask
     return df
