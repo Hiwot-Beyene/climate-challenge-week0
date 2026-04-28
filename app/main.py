@@ -9,10 +9,16 @@ Run locally:
 Reads cleaned CSVs from data/*_clean.csv (never committed to git).
 """
 
-import streamlit as st
-import pandas as pd
 from pathlib import Path
-from utils import load_combined, temperature_chart, precipitation_boxplot, vulnerability_table
+
+import streamlit as st
+
+from app.utils import (
+    load_combined,
+    precipitation_boxplot,
+    temperature_chart,
+    vulnerability_table,
+)
 
 st.set_page_config(
     page_title="EthioClimate COP32 Explorer",

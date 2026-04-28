@@ -4,5 +4,5 @@ Standalone Python scripts for one-off operations (e.g. batch cleaning all countr
 
 Usage:
 ```bash
-uv run python scripts/run_cleaning.py
+uv run python scripts/prepare_data.py
 ```
